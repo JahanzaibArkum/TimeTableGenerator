@@ -237,14 +237,10 @@ class Class:
         return str(self._dept.get_name()) + "," + str(self._course.get_number()) + "," +                str(self._room.get_number()) + "," + str(self._instructor.get_id()) + "," + str(self._meetingTime.get_id())
     
 class DisplayMgr:
-    
     def print_available_data(self):
-        print("> All Available Data")
-        self.print_dept()
-        self.print_course()
-        self.print_room()
-        self.print_instructor()
-        self.print_meeting_times()
+        st.write("### Available Courses")
+        self.print_course(available_courses)  # Ensure available_courses is passed correctly
+
         
     def print_dept(self):
         depts = data.get_depts()
@@ -346,8 +342,9 @@ while (population.get_schedules()[0].get_fitness() != 1.0):
     displayMgr.print_generation(population)
     displayMgr.print_schedule_as_table(population.get_schedules()[0])
 print("\n\n")
+# Inside your main script
 if st.button("Show Available Data"):
-    st.write("### Departments and Courses")
+    displayMgr.print_available_data()  # Should work without issues now
     for dept in data.get_depts():
         st.write(f"{dept.get_name()}: {', '.join(course.get_name() for course in dept.get_courses())}")
 
