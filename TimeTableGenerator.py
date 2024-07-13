@@ -304,17 +304,21 @@ class DisplayMgr:
         df = pd.DataFrame(data)
         st.write(df)  # Display the DataFrame in Streamlit
         
-    def print_schedule_as_table(self, schedule):
-        classes = schedule.get_classes()
-        table = prettytable.PrettyTable(['Class #', 'Dept', 'Course (number, max # of students)', 'Room (Capacity)', 'Instructor (Id)',  'Meeting Time (Id)'])
-        for i in range(0, len(classes)):
-            table.add_row([str(i), classes[i].get_dept().get_name(), classes[i].get_course().get_name() + " (" +
-                           classes[i].get_course().get_number() + ", " +
-                           str(classes[i].get_course().get_maxNumbOfStudents()) +")",
-                           classes[i].get_room().get_number() + " (" + str(classes[i].get_room().get_seatingCapacity()) + ")",
-                           classes[i].get_instructor().get_name() +" (" + str(classes[i].get_instructor().get_id()) +")",
-                           classes[i].get_meetingTime().get_time() +" (" + str(classes[i].get_meetingTime().get_id()) +")"])
-        print(table)
+def print_schedule_as_table(self, schedule):
+    classes = schedule.get_classes()
+    table_data = []
+    for i in range(len(classes)):
+        table_data.append([
+            str(i),
+            classes[i].get_dept().get_name(),
+            f"{classes[i].get_course().get_name()} ({classes[i].get_course().get_number()}, {classes[i].get_course().get_maxNumbOfStudents()})",
+            f"{classes[i].get_room().get_number()} ({classes[i].get_room().get_seatingCapacity()})",
+            f"{classes[i].get_instructor().get_name()} ({classes[i].get_instructor().get_id()})",
+            f"{classes[i].get_meetingTime().get_time()} ({classes[i].get_meetingTime().get_id()})"
+        ])
+    df = pd.DataFrame(table_data, columns=['Class #', 'Dept', 'Course (number, max # of students)', 'Room (Capacity)', 'Instructor (Id)', 'Meeting Time (Id)'])
+    st.table(df)  # Display the DataFrame in Streamlit
+
         
         
         
