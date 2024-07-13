@@ -304,24 +304,24 @@ class DisplayMgr:
         df = pd.DataFrame(data)
         st.write(df)  # Display the DataFrame in Streamlit
         
-def print_schedule_as_table(self, schedule):
-    classes = schedule.get_classes()
-    table_data = []
-    for i in range(len(classes)):
-        table_data.append([
-            str(i),
-            classes[i].get_dept().get_name(),
-            f"{classes[i].get_course().get_name()} ({classes[i].get_course().get_number()}, {classes[i].get_course().get_maxNumbOfStudents()})",
-            f"{classes[i].get_room().get_number()} ({classes[i].get_room().get_seatingCapacity()})",
-            f"{classes[i].get_instructor().get_name()} ({classes[i].get_instructor().get_id()})",
-            f"{classes[i].get_meetingTime().get_time()} ({classes[i].get_meetingTime().get_id()})"
-        ])
-    df = pd.DataFrame(table_data, columns=['Class #', 'Dept', 'Course (number, max # of students)', 'Room (Capacity)', 'Instructor (Id)', 'Meeting Time (Id)'])
-    st.table(df)  # Display the DataFrame in Streamlit
-
-        
-        
-        
+    def print_schedule_as_table(self, schedule):
+        classes = schedule.get_classes()
+        table_data = []
+        for i in range(len(classes)):
+            table_data.append([
+                str(i),
+                classes[i].get_dept().get_name(),
+                f"{classes[i].get_course().get_name()} ({classes[i].get_course().get_number()}, {classes[i].get_course().get_maxNumbOfStudents()})",
+                f"{classes[i].get_room().get_number()} ({classes[i].get_room().get_seatingCapacity()})",
+                f"{classes[i].get_instructor().get_name()} ({classes[i].get_instructor().get_id()})",
+                f"{classes[i].get_meetingTime().get_time()} ({classes[i].get_meetingTime().get_id()})"
+            ])
+        df = pd.DataFrame(table_data, columns=['Class #', 'Dept', 'Course (number, max # of students)', 'Room (Capacity)', 'Instructor (Id)', 'Meeting Time (Id)'])
+        st.table(df)  # Display the DataFrame in Streamlit
+    
+            
+            
+            
         
 
 
@@ -363,7 +363,8 @@ if st.button("Show Available Data"):
     for meeting_time in data.get_meetingTimes():
         st.write(f"{meeting_time.get_id()}: {meeting_time.get_time()}")
 
-# Initialize population and run genetic algorithmif st.button("Run Scheduling Algorithm"):
+# Initialize population and run genetic algorithm
+if st.button("Run Scheduling Algorithm"):
     generationNumber = 0
     population = Population(POPULATION_SIZE)
     population.get_schedules().sort(key=lambda x: x.get_fitness(), reverse=True)
