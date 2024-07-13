@@ -332,7 +332,8 @@ class DisplayMgr:
 data = Data()
 st.title("Class Scheduling Application")
 displayMgr = DisplayMgr()
-displayMgr.print_available_data()
+displayMgr.print_available_data(available_courses)
+
 generationNumber = 0
 print("\n> Generation # "+str(generationNumber))
 population = Population(POPULATION_SIZE)
