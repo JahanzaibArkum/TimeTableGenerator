@@ -1,7 +1,7 @@
 import streamlit as st
 import prettytable as prettytable
 import random as rnd
- import pandas as pd
+import pandas as pd
 
 POPULATION_SIZE = 4
 NUMB_OF_ELITE_SCHEDULES = 1
