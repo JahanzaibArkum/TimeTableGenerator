@@ -237,84 +237,90 @@ class Class:
         return str(self._dept.get_name()) + "," + str(self._course.get_number()) + "," +                str(self._room.get_number()) + "," + str(self._instructor.get_id()) + "," + str(self._meetingTime.get_id())
     
 class DisplayMgr:
-    def print_available_data(self):
-        st.write("### Available Courses")
-        self.print_course(available_courses)  # Ensure available_courses is passed correctly
-
-        
-    def print_dept(self):
-        depts = data.get_depts()
-        availableDeptsTable = prettytable.PrettyTable(['dept', 'courses'])
-        for i in range(0, len(depts)):
-            courses = depts.__getitem__(i).get_courses()
-            tempStr = "["
-            for j in range(0, len(courses) - 1):
-                tempStr += courses[j].__str__() + ", "
-            tempStr += courses[len(courses) - 1].__str__() + "]"
-            availableDeptsTable.add_row([depts.__getitem__(i).get_name(), tempStr])
-        print(availableDeptsTable)
-        
-    def print_course(self):
-        availableCoursesTable = prettytable.PrettyTable(['id', 'course #', 'max # of students', 'instructors'])
-        courses = data.get_courses()
-        for i in range(0, len(courses)):
-            instructors = courses[i].get_instructors()
-            tempStr = ""
-            for j in range(0, len(instructors) - 1):
-                tempStr += instructors[j].__str__() + ", "
-            tempStr += instructors[len(instructors) - 1].__str__()
-            availableCoursesTable.add_row(
-                [courses[i].get_number(), courses[i].get_name(), str(courses[i].get_maxNumbOfStudents()), tempStr])
-        print(availableCoursesTable)
-        
-    def print_instructor(self):
-        availableInstructorsTable = prettytable.PrettyTable(['id', 'instructor'])
-        instructors = data.get_instructors()
-        for i in range(0, len(instructors)):
-            availableInstructorsTable.add_row([instructors[i].get_id(), instructors[i].get_name()])
-        print(availableInstructorsTable)
-        
-    def print_room(self):
-        availableRoomsTable = prettytable.PrettyTable(['room #', 'max seating capacity'])
-        rooms = data.get_rooms()
-        for i in range(0, len(rooms)):
-            availableRoomsTable.add_row([str(rooms[i].get_number()), str(rooms[i].get_seatingCapacity())])
-        print(availableRoomsTable)
-        
-    def print_meeting_times(self):
-        availableMeetingTimeTable = prettytable.PrettyTable(['id', 'Meeting Time'])
-        meetingTimes = data.get_meetingTimes()
-        for i in range(0, len(meetingTimes)):
-            availableMeetingTimeTable.add_row([meetingTimes[i].get_id(), meetingTimes[i].get_time()])
-        print(availableMeetingTimeTable)
-    def print_generation(self, population):
-        data = []
-        schedules = population.get_schedules()
-        for i in range(len(schedules)):
-            data.append({
-                'schedule #': str(i),
-                'fitness': round(schedules[i].get_fitness(), 3),
-                '# of conflicts': schedules[i].get_numbOfConflicts(),
-                'classes [dept,class,room,instructor,meeting-time]': schedules[i].__str__()
-            })
-        df = pd.DataFrame(data)
-        st.write(df)  # Display the DataFrame in Streamlit
-        
-    def print_schedule_as_table(self, schedule):
-        classes = schedule.get_classes()
-        table_data = []
-        for i in range(len(classes)):
-            table_data.append([
-                str(i),
-                classes[i].get_dept().get_name(),
-                f"{classes[i].get_course().get_name()} ({classes[i].get_course().get_number()}, {classes[i].get_course().get_maxNumbOfStudents()})",
-                f"{classes[i].get_room().get_number()} ({classes[i].get_room().get_seatingCapacity()})",
-                f"{classes[i].get_instructor().get_name()} ({classes[i].get_instructor().get_id()})",
-                f"{classes[i].get_meetingTime().get_time()} ({classes[i].get_meetingTime().get_id()})"
-            ])
-        df = pd.DataFrame(table_data, columns=['Class #', 'Dept', 'Course (number, max # of students)', 'Room (Capacity)', 'Instructor (Id)', 'Meeting Time (Id)'])
-        st.table(df)  # Display the DataFrame in Streamlit
     
+    def print_available_data(self, data):
+        st.write("> All Available Data")
+        self.print_dept(data)
+        available_courses = data.get_courses()  # Ensure this retrieves the list of courses
+        self.print_course(available_courses)  # Pass them to the method
+        self.print_room(data)
+        self.print_instructor(data)
+        self.print_meeting_times(data)
+
+    def print_course(self, available_courses):
+        table_data = []
+
+        for course in available_courses:
+            table_data.append([
+                course.get_number(),
+                course.get_name(),
+                course.get_maxNumbOfStudents(),
+                ", ".join(instructor.get_name() for instructor in course.get_instructors())
+            ])
+
+        df = pd.DataFrame(table_data, columns=['Course #', 'Course Name', 'Max # of Students', 'Instructors'])
+        st.table(df)  # Display the DataFrame in Streamlit
+
+    def print_dept(self, data):
+        depts = data.get_depts()
+        table_data = []
+
+        for dept in depts:
+            courses = dept.get_courses()
+            course_names = ", ".join(course.get_name() for course in courses)
+            table_data.append([dept.get_name(), course_names])
+
+        df = pd.DataFrame(table_data, columns=['Department', 'Courses'])
+        st.table(df)  # Display the DataFrame in Streamlit
+
+    def print_room(self, data):
+        rooms = data.get_rooms()
+        table_data = []
+
+        for room in rooms:
+            table_data.append([room.get_number(), room.get_seatingCapacity()])
+
+        df = pd.DataFrame(table_data, columns=['Room #', 'Max Seating Capacity'])
+        st.table(df)  # Display the DataFrame in Streamlit
+
+    def print_instructor(self, data):
+        instructors = data.get_instructors()
+        table_data = []
+
+        for instructor in instructors:
+            table_data.append([instructor.get_id(), instructor.get_name()])
+
+        df = pd.DataFrame(table_data, columns=['Instructor ID', 'Instructor Name'])
+        st.table(df)  # Display the DataFrame in Streamlit
+
+    def print_meeting_times(self, data):
+        meeting_times = data.get_meetingTimes()
+        table_data = []
+
+        for meeting_time in meeting_times:
+            table_data.append([meeting_time.get_id(), meeting_time.get_time()])
+
+        df = pd.DataFrame(table_data, columns=['Meeting Time ID', 'Meeting Time'])
+        st.table(df)  # Display the DataFrame in Streamlit
+
+    def print_generation(self, population):
+        st.write("Generation Results:")
+        # Assuming population has a method to get schedules
+        for gen in range(len(population)):
+            st.write(f"Generation #{gen}")
+            # You can implement further details based on your structure
+
+    def print_schedule_as_table(self, schedule):
+        table_data = []  # Adjust this based on your schedule structure
+
+        for item in schedule:
+            table_data.append([
+                item.get_some_property(),  # Adjust based on actual properties
+                item.get_another_property()
+            ])
+
+        df = pd.DataFrame(table_data, columns=['Property 1', 'Property 2'])
+        st.table(df)  # Display the schedule in a table
             
             
             
