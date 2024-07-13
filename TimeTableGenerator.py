@@ -1,6 +1,7 @@
 import streamlit as st
 import prettytable as prettytable
 import random as rnd
+ import pandas as pd
 
 POPULATION_SIZE = 4
 NUMB_OF_ELITE_SCHEDULES = 1
@@ -290,13 +291,18 @@ class DisplayMgr:
         for i in range(0, len(meetingTimes)):
             availableMeetingTimeTable.add_row([meetingTimes[i].get_id(), meetingTimes[i].get_time()])
         print(availableMeetingTimeTable)
-        
     def print_generation(self, population):
-        table1 = prettytable.PrettyTable(['schedule #', 'fitness', '# of conflicts', 'classes [dept,class,room,instructor,meeting-time]'])
+        data = []
         schedules = population.get_schedules()
-        for i in range(0, len(schedules)):
-            table1.add_row([str(i), round(schedules[i].get_fitness(),3), schedules[i].get_numbOfConflicts(), schedules[i].__str__()])
-        print(table1)
+        for i in range(len(schedules)):
+            data.append({
+                'schedule #': str(i),
+                'fitness': round(schedules[i].get_fitness(), 3),
+                '# of conflicts': schedules[i].get_numbOfConflicts(),
+                'classes [dept,class,room,instructor,meeting-time]': schedules[i].__str__()
+            })
+        df = pd.DataFrame(data)
+        st.write(df)  # Display the DataFrame in Streamlit
         
     def print_schedule_as_table(self, schedule):
         classes = schedule.get_classes()
